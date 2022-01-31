@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "websoftik-tms-project"
+  },
+  "targets": {
+    "websoftik-tms-project": {
+      "hosting": {
+        "websoftik-tms-project": [
+          "websoftik-tms-project"
+        ]
+      }
+    }
+  }
+}
