@@ -16,6 +16,8 @@
 */
 // nodejs library that concatenates classes
 import classnames from "classnames";
+import { Link } from "react-router-dom";
+
 // nodejs library to set properties for components
 import PropTypes from "prop-types";
 // reactstrap components
@@ -131,6 +133,10 @@ function AdminNavbar({ theme, sidenavOpen, toggleSidenav }) {
                   <i className="ni ni-zoom-split-in" />
                 </NavLink>
               </NavItem>
+              <NavLink to="/auth/login" tag={Link}>
+                  <span className="nav-link-inner--text">Login</span>
+              
+                </NavLink>
               <UncontrolledDropdown nav>
                 <DropdownToggle className="nav-link" color="" tag="a">
                   <i className="ni ni-bell-55" />
