@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef}from "react";
 // nodejs library that concatenates classes
 import classnames from "classnames";
 // reactstrap components
@@ -24,6 +24,11 @@ function Register() {
   const [focusedName, setfocusedName] = React.useState(false);
   const [focusedEmail, setfocusedEmail] = React.useState(false);
   const [focusedPassword, setfocusedPassword] = React.useState(false);
+  const nameRef = useRef()
+  const emailRef = useRef()
+  const passwordRef = useRef()
+  const passwordConfirmRef = useRef()
+
   return (
     <>
       <AuthHeader
@@ -91,6 +96,8 @@ function Register() {
                       </InputGroupAddon>
                       <Input
                         placeholder="Name"
+                        ref={nameRef}
+                        required
                         type="text"
                         onFocus={() => setfocusedName(true)}
                         onBlur={() => setfocusedName(false)}
@@ -110,6 +117,8 @@ function Register() {
                       </InputGroupAddon>
                       <Input
                         placeholder="Email"
+                        ref={emailRef}
+                        required
                         type="email"
                         onFocus={() => setfocusedEmail(true)}
                         onBlur={() => setfocusedEmail(false)}
@@ -121,7 +130,7 @@ function Register() {
                       focused: focusedPassword,
                     })}
                   >
-                    <InputGroup className="input-group-merge input-group-alternative">
+                    <InputGroup className="input-group-merge input-group-alternative mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i className="ni ni-lock-circle-open" />
@@ -129,11 +138,30 @@ function Register() {
                       </InputGroupAddon>
                       <Input
                         placeholder="Password"
+                        ref={passwordRef}
+                        required
                         type="password"
                         onFocus={() => setfocusedPassword(true)}
                         onBlur={() => setfocusedPassword(false)}
                       />
                     </InputGroup>
+
+                    <InputGroup className="input-group-merge input-group-alternative">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="ni ni-lock-circle-open" />
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input
+                        placeholder="Password Confirmation"
+                        ref={passwordConfirmRef}
+                        required
+                        type="password"
+                        onFocus={() => setfocusedPassword(true)}
+                        onBlur={() => setfocusedPassword(false)}
+                      />
+                    </InputGroup>
+                    
                   </FormGroup>
                   <div className="text-muted font-italic">
                     <small>

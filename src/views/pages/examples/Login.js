@@ -1,5 +1,5 @@
-import React, {useRef} from "react";
-import { useAuth } from './context/AuthContext'
+import React from "react";
+
 import classnames from "classnames";
 import {
   Button,
@@ -21,17 +21,9 @@ import AuthHeader from "components/Headers/AuthHeader.js";
 function Login() {
   const [focusedEmail, setfocusedEmail] = React.useState(false);
   const [focusedPassword, setfocusedPassword] = React.useState(false);
-  const emailRef = useRef()
-  const passwordRef = useRef()
-  const { signup } = useAuth()
 
-  function handleSubmit(e){
-    e.preventDefault()
-    signup(emailRef.current.value, passwordRef.current.value)
-  }
   return ( 
     <>
-    <AuthProvider>
       <AuthHeader
         title="Welcome!"
         lead="Use these awesome forms to login or create new account in your project for free."
@@ -96,9 +88,7 @@ function Login() {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input
-                        required
                         placeholder="Email"
-                        ref={emailRef}
                         type="email"
                         onFocus={() => setfocusedEmail(true)}
                         onBlur={() => setfocusedEmail(true)}
@@ -117,10 +107,8 @@ function Login() {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input
-                        required
                         placeholder="Password"
                         type="password"
-                        ref={passwordRef}
                         onFocus={() => setfocusedPassword(true)}
                         onBlur={() => setfocusedPassword(true)}
                       />
@@ -170,7 +158,6 @@ function Login() {
           </Col>
         </Row>
       </Container>
-      </AuthProvider>
     </>
   );
 }
