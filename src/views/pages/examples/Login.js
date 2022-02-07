@@ -1,23 +1,6 @@
-/*!
-
-=========================================================
-* Argon Dashboard PRO React - v1.2.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-pro-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import React from "react";
-// nodejs library that concatenates classes
+import React, {useRef} from "react";
+import { useAuth } from './context/AuthContext'
 import classnames from "classnames";
-// reactstrap components
 import {
   Button,
   Card,
@@ -33,14 +16,22 @@ import {
   Row,
   Col,
 } from "reactstrap";
-// core components
 import AuthHeader from "components/Headers/AuthHeader.js";
 
 function Login() {
   const [focusedEmail, setfocusedEmail] = React.useState(false);
   const [focusedPassword, setfocusedPassword] = React.useState(false);
-  return (
+  const emailRef = useRef()
+  const passwordRef = useRef()
+  const { signup } = useAuth()
+
+  function handleSubmit(e){
+    e.preventDefault()
+    signup(emailRef.current.value, passwordRef.current.value)
+  }
+  return ( 
     <>
+    <AuthProvider>
       <AuthHeader
         title="Welcome!"
         lead="Use these awesome forms to login or create new account in your project for free."
@@ -105,7 +96,9 @@ function Login() {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input
+                        required
                         placeholder="Email"
+                        ref={emailRef}
                         type="email"
                         onFocus={() => setfocusedEmail(true)}
                         onBlur={() => setfocusedEmail(true)}
@@ -124,8 +117,10 @@ function Login() {
                         </InputGroupText>
                       </InputGroupAddon>
                       <Input
+                        required
                         placeholder="Password"
                         type="password"
+                        ref={passwordRef}
                         onFocus={() => setfocusedPassword(true)}
                         onBlur={() => setfocusedPassword(true)}
                       />
@@ -175,6 +170,7 @@ function Login() {
           </Col>
         </Row>
       </Container>
+      </AuthProvider>
     </>
   );
 }
