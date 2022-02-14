@@ -1,7 +1,5 @@
-import React, {useRef}from "react";
-// nodejs library that concatenates classes
+import React, { useRef } from "react";
 import classnames from "classnames";
-// reactstrap components
 import {
   Button,
   Card,
@@ -17,17 +15,23 @@ import {
   Row,
   Col,
 } from "reactstrap";
-// core components
 import AuthHeader from "components/Headers/AuthHeader.js";
+import { useAuth } from '../examples/AuthContext'
 
 function Register() {
   const [focusedName, setfocusedName] = React.useState(false);
   const [focusedEmail, setfocusedEmail] = React.useState(false);
   const [focusedPassword, setfocusedPassword] = React.useState(false);
-  const nameRef = useRef()
   const emailRef = useRef()
   const passwordRef = useRef()
   const passwordConfirmRef = useRef()
+  const { register } = useAuth()
+
+  function handleSubmit(e){
+    e.preventDefault()
+
+    register(emailRef.current.value, passwordRef.current.value)
+  }
 
   return (
     <>
@@ -96,7 +100,6 @@ function Register() {
                       </InputGroupAddon>
                       <Input
                         placeholder="Name"
-                        ref={nameRef}
                         required
                         type="text"
                         onFocus={() => setfocusedName(true)}
@@ -138,8 +141,8 @@ function Register() {
                       </InputGroupAddon>
                       <Input
                         placeholder="Password"
-                        ref={passwordRef}
                         required
+                        reefe={passwordRef}
                         type="password"
                         onFocus={() => setfocusedPassword(true)}
                         onBlur={() => setfocusedPassword(false)}
@@ -154,8 +157,8 @@ function Register() {
                       </InputGroupAddon>
                       <Input
                         placeholder="Password Confirmation"
-                        ref={passwordConfirmRef}
                         required
+                        ref={passwordConfirmRef}
                         type="password"
                         onFocus={() => setfocusedPassword(true)}
                         onBlur={() => setfocusedPassword(false)}
