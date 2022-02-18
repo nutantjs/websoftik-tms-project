@@ -37,6 +37,8 @@ import AdminLayout from "layouts/Admin.js";
 import RTLLayout from "layouts/RTL.js";
 import AuthLayout from "layouts/Auth.js";
 import IndexView from "views/Index.js";
+export const UserContext = React.createContext(null);
+
 
 ReactDOM.render(
   <BrowserRouter>

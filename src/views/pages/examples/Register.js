@@ -1,5 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import classnames from "classnames";
+import { Link as RouterLink, NavLink, useHistory, Redirect } from 'react-router';
+
 import {
   Button,
   Card,
@@ -14,24 +16,59 @@ import {
   Container,
   Row,
   Col,
+  Alert,
 } from "reactstrap";
 import AuthHeader from "components/Headers/AuthHeader.js";
-import { useAuth } from '../examples/AuthContext'
+import { signup, useAuth, logout, login } from "../../../firebase";
+import Login from "./Login";
+import {auth} from '../../../firebase';
+import {UserContext} from '../../../index'
+
 
 function Register() {
   const [focusedName, setfocusedName] = React.useState(false);
   const [focusedEmail, setfocusedEmail] = React.useState(false);
   const [focusedPassword, setfocusedPassword] = React.useState(false);
-  const emailRef = useRef()
-  const passwordRef = useRef()
-  const passwordConfirmRef = useRef()
-  const { register } = useAuth()
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const [ loading, setLoading ] = useState(false)
+  const currentUser = useAuth();
 
-  function handleSubmit(e){
-    e.preventDefault()
 
-    register(emailRef.current.value, passwordRef.current.value)
+  
+
+//  async function handleSignup(){
+
+//    try{
+//     await signup(emailRef.current.value, passwordRef.current.value)
+//    };
+//    } catch{
+//      alert("errror")
+//    }
+//    setLoading(false);
+//   }
+ 
+async function handleLogout(){
+  setLoading(true);
+  try{
+    await logout();
+  }catch{
+    alert("errror");
   }
+  setLoading(false);
+}
+
+async function handleLogin() {
+  setLoading(true);
+  try {
+    await login(emailRef.current.value, passwordRef.current.value).then(()=> {
+      <Redirect to="/admin/dashboard" />
+    });
+  } catch {
+    alert("Error!");
+  }
+  setLoading(false);
+}
 
   return (
     <>
@@ -52,7 +89,6 @@ function Register() {
                     className="btn-neutral btn-icon mr-4"
                     color="default"
                     href="#pablo"
-                    onClick={(e) => e.preventDefault()}
                   >
                     <span className="btn-inner--icon mr-1">
                       <img
@@ -68,14 +104,11 @@ function Register() {
                     className="btn-neutral btn-icon"
                     color="default"
                     href="#pablo"
-                    onClick={(e) => e.preventDefault()}
                   >
                     <span className="btn-inner--icon mr-1">
                       <img
                         alt="..."
-                        src={
-                          require("assets/img/icons/common/google.svg").default
-                        }
+                      
                       />
                     </span>
                     <span className="btn-inner--text">Google</span>
@@ -85,9 +118,12 @@ function Register() {
               <CardBody className="px-lg-5 py-lg-5">
                 <div className="text-center text-muted mb-4">
                   <small>Or sign up with credentials</small>
+                  
                 </div>
+                <div>user{currentUser?.email}</div>
                 <Form role="form">
-                  <FormGroup
+                  
+                  {/* <FormGroup
                     className={classnames({
                       focused: focusedName,
                     })}
@@ -106,10 +142,9 @@ function Register() {
                         onBlur={() => setfocusedName(false)}
                       />
                     </InputGroup>
-                  </FormGroup>
+                  </FormGroup> */}
                   <FormGroup
                     className={classnames({
-                      focused: focusedEmail,
                     })}
                   >
                     <InputGroup className="input-group-merge input-group-alternative mb-3">
@@ -120,11 +155,10 @@ function Register() {
                       </InputGroupAddon>
                       <Input
                         placeholder="Email"
-                        ref={emailRef}
                         required
                         type="email"
-                        onFocus={() => setfocusedEmail(true)}
-                        onBlur={() => setfocusedEmail(false)}
+                        ref={emailRef}
+                     
                       />
                     </InputGroup>
                   </FormGroup>
@@ -142,28 +176,13 @@ function Register() {
                       <Input
                         placeholder="Password"
                         required
-                        reefe={passwordRef}
+                        ref={passwordRef}
                         type="password"
-                        onFocus={() => setfocusedPassword(true)}
-                        onBlur={() => setfocusedPassword(false)}
+                     
                       />
                     </InputGroup>
 
-                    <InputGroup className="input-group-merge input-group-alternative">
-                      <InputGroupAddon addonType="prepend">
-                        <InputGroupText>
-                          <i className="ni ni-lock-circle-open" />
-                        </InputGroupText>
-                      </InputGroupAddon>
-                      <Input
-                        placeholder="Password Confirmation"
-                        required
-                        ref={passwordConfirmRef}
-                        type="password"
-                        onFocus={() => setfocusedPassword(true)}
-                        onBlur={() => setfocusedPassword(false)}
-                      />
-                    </InputGroup>
+                   
                     
                   </FormGroup>
                   <div className="text-muted font-italic">
@@ -190,7 +209,6 @@ function Register() {
                             I agree with the{" "}
                             <a
                               href="#pablo"
-                              onClick={(e) => e.preventDefault()}
                             >
                               Privacy Policy
                             </a>
@@ -200,8 +218,14 @@ function Register() {
                     </Col>
                   </Row>
                   <div className="text-center">
-                    <Button className="mt-4" color="info" type="button">
+                    {/* <Button  onClick={handleSignup} className="mt-4" color="info" type="button">
                       Create account
+                    </Button> */}
+                    <Button  onClick={handleLogout} className="mt-4" color="info" type="button">
+                      Logout
+                    </Button>
+                    <Button  onClick={handleLogin} className="mt-4" color="info" type="button">
+                      Login
                     </Button>
                   </div>
                 </Form>
@@ -213,5 +237,5 @@ function Register() {
     </>
   );
 }
-
 export default Register;
+

@@ -1,5 +1,6 @@
-import firebase from 'firebase/compat/app';
-import "firebase/compat/auth";
+import { initializeApp } from  "firebase/app";
+import {getAuth, createUserWithEmailAndPassword, onAuthStateChanged,signInWithEmailAndPassword, signOut} from "firebase/auth";
+import { useEffect, useState } from "react";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAvp9WqnbavSGjqCcfAsqNpXowY_iBgcBU",
@@ -11,7 +12,30 @@ const firebaseConfig = {
   measurementId: "G-Q27PPE10JQ"
 };
 
-firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth();
 
-export const auth = firebase.auth();
-export default firebase;
+export function signup(email, password) {
+  return createUserWithEmailAndPassword(auth, email, password);
+
+}
+export function useAuth(){
+  const [ currentUser, setCurrentUser ] = useState();
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, user => setCurrentUser(user));
+    return unsub
+  },
+   [])
+  return currentUser;
+}
+export function logout(){
+  return signOut(auth);
+}
+
+export function login(email, password) {
+  return signInWithEmailAndPassword(auth, email, password);
+}
+
+
+
+
