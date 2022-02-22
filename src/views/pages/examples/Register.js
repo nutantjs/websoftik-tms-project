@@ -1,8 +1,12 @@
 import React, { useRef, useState } from "react";
 import classnames from "classnames";
-import { Link as RouterLink, NavLink, useHistory, Redirect } from 'react-router';
-import { useAuth, } from "../examples/AuthContext";
-
+import {
+  Link as RouterLink,
+  NavLink,
+  useHistory,
+  Redirect,
+} from "react-router";
+import { signup, useAuth } from "../../../firebase";
 import {
   Button,
   Card,
@@ -23,62 +27,46 @@ import AuthHeader from "components/Headers/AuthHeader.js";
 import Login from "./Login";
 import { isConditionalExpression } from "typescript";
 
-
 function Register() {
-    const emailRef = useRef()
-    const passwordRef = useRef()
-    const passwordConfirmRef = useRef()
-    const { signup } = useAuth()
-    const [error, setError] = useState("")
-    const [loading, setLoading] = useState(false)
-    const history = useHistory()
-    async function handleSubmit(e) {
-        e.preventDefault()
-    
-        if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-          return setError("Passwords do not match")
-        }
-    
-        try {
-          setError("")
-          setLoading(true)
-          await signup(emailRef.current.value, passwordRef.current.value)
-          history.push("/")
-        } catch {
-          setError("Failed to create an account")
-        }
-    
-        setLoading(false)
-      }
-  
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const [loading, setLoading] = useState(false);
+  const currentUser = useAuth();
 
-//  async function handleSignup(){
+  async function handleSignup(e) {
+    e.preventDefault();
+    console.log(emailRef.current);
+    // setLoading(true);
+    // await signup(emailRef.current.value, passwordRef.current.value);
+    // setLoading(false);
 
-//    try{
-//     await signup(emailRef.current.value, passwordRef.current.value)
-//    };
-//    } catch{
-//      alert("errror")
-//    }
-//    setLoading(false);
-//   }
- 
-// async function handleLogout(){
-//   try{
-//     await logout();
-//   }catch{
-//     alert("errror");
-//   }
-// }
-// async function handleSignup() {
-//   // try {
-//     await signup(emailRef.currentUser, passwordRef.currentUser);
-//   // } catch {
-//     // alert("Error!");
-//   // }
-// }
+  }
 
+  //  async function handleSignup(){
 
+  //    try{
+  //     await signup(emailRef.current.value, passwordRef.current.value)
+  //    };
+  //    } catch{
+  //      alert("errror")
+  //    }
+  //    setLoading(false);
+  //   }
+
+  // async function handleLogout(){
+  //   try{
+  //     await logout();
+  //   }catch{
+  //     alert("errror");
+  //   }
+  // }
+  // async function handleSignup() {
+  //   // try {
+  //     await signup(emailRef.currentUser, passwordRef.currentUser);
+  //   // } catch {
+  //     // alert("Error!");
+  //   // }
+  // }
 
   return (
     <>
@@ -116,10 +104,7 @@ function Register() {
                     href="#pablo"
                   >
                     <span className="btn-inner--icon mr-1">
-                      <img
-                        alt="..."
-                      
-                      />
+                      <img alt="..." />
                     </span>
                     <span className="btn-inner--text">Google</span>
                   </Button>
@@ -128,11 +113,9 @@ function Register() {
               <CardBody className="px-lg-5 py-lg-5">
                 <div className="text-center text-muted mb-4">
                   <small>Or sign up with credentials</small>
-                  
                 </div>
-                {error && <Alert variant="danger">{error}</Alert>}
-                <Form role="form" onSubmit={handleSubmit}>
-                  
+
+                <Form role="form">
                   {/* <FormGroup
                     className={classnames({
                       focused: focusedName,
@@ -153,10 +136,7 @@ function Register() {
                       />
                     </InputGroup>
                   </FormGroup> */}
-                  <FormGroup
-                    className={classnames({
-                    })}
-                  >
+                  <FormGroup className={classnames({})}>
                     <InputGroup className="input-group-merge input-group-alternative mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -171,10 +151,7 @@ function Register() {
                       />
                     </InputGroup>
                   </FormGroup>
-                  <FormGroup
-                    className={classnames({
-                    })}
-                  >
+                  <FormGroup className={classnames({})}>
                     <InputGroup className="input-group-merge input-group-alternative mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -188,9 +165,6 @@ function Register() {
                         required
                       />
                     </InputGroup>
-
-                   
-                    
                   </FormGroup>
                   <div className="text-muted font-italic">
                     <small>
@@ -213,19 +187,19 @@ function Register() {
                           htmlFor="customCheckRegister"
                         >
                           <span className="text-muted">
-                            I agree with the{" "}
-                            <a
-                              href="#pablo"
-                            >
-                              Privacy Policy
-                            </a>
+                            I agree with the <a href="#pablo">Privacy Policy</a>
                           </span>
                         </label>
                       </div>
                     </Col>
                   </Row>
                   <div className="text-center">
-                    <Button className="mt-4" color="info" type="submit">
+                    <Button
+                      className="mt-4"
+                      color="info"
+                      type="submit"
+                      onClick={handleSignup}
+                    >
                       Create account
                     </Button>
                     {/* <Button  onClick={handleLogout} className="mt-4" color="info">
@@ -245,4 +219,3 @@ function Register() {
   );
 }
 export default Register;
-

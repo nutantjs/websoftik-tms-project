@@ -44,7 +44,7 @@ export const UserContext = React.createContext(null);
 
 ReactDOM.render(
   <BrowserRouter>
-  <AuthProvider>
+  
     <Switch>
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
       <Route path="/rtl" render={(props) => <RTLLayout {...props} />} />
@@ -52,7 +52,7 @@ ReactDOM.render(
       <Route path="/" render={(props) => <IndexView {...props} />} />
       <Redirect from="*" to="/" />
     </Switch>
-    </AuthProvider>
+    
   </BrowserRouter>,
   document.getElementById("root")
 );

@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import classnames from "classnames";
+
 import {
   Button,
   Card,
@@ -17,32 +18,35 @@ import {
   Alert,
 } from "reactstrap";
 import AuthHeader from "components/Headers/AuthHeader.js";
-import { Redirect, useHistory } from "react-router";
-import { login, useAuth, logout } from "../examples/AuthContext";
-
+import { login, useAuth } from "../../../firebase";
+import { useHistory } from "react-router";
 
 function Login() {
-  const emailRef = useRef()
-  const passwordRef = useRef()
-  const { login } = useAuth()
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const history = useHistory()
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const currentUser = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const history = useHistory();
 
-  async function handleSubmit(e) {
-    e.preventDefault()
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
 
-    try {
-      setError("")
-      setLoading(true)
-      await login(emailRef.current.value, passwordRef.current.value);
-      history.push("/")
-    } catch {
-      setError("Failed to log in")
-    }
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
 
-    setLoading(false)
-  }
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+     setLoading(true);
+      await login(email, password).then(() => {
+        history.push("/admin/dashboard")
+      });
+      setLoading(true);
+  };
 
   return (
     <>
@@ -82,7 +86,9 @@ function Login() {
                     <span className="btn-inner--icon mr-1">
                       <img
                         alt="..."
-                        src={require("assets/img/icons/common/google.svg").default}
+                        src={
+                          require("assets/img/icons/common/google.svg").default
+                        }
                       />
                     </span>
                     <span className="btn-inner--text">Google</span>
@@ -92,11 +98,9 @@ function Login() {
               <CardBody className="px-lg-5 py-lg-5">
                 <div className="text-center text-muted mb-4">
                   <small>Or login with credentials</small>
-                  
                 </div>
-                {error && <Alert variant="danger">{error}</Alert>}
 
-                <Form role="form" onSubmit={handleSubmit}>
+                <Form role="form">
                   {/* <FormGroup
                     className={classnames({
                       focused: focusedName,
@@ -117,10 +121,7 @@ function Login() {
                       />
                     </InputGroup>
                   </FormGroup> */}
-                  <FormGroup
-                    className={classnames({
-                    })}
-                  >
+                  <FormGroup className={classnames({})}>
                     <InputGroup className="input-group-merge input-group-alternative mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -132,13 +133,13 @@ function Login() {
                         required
                         type="email"
                         ref={emailRef}
+                        value={email}
+                        onChange={handleEmailChange}
+                        //her değişiklikte çalışıyor
                       />
                     </InputGroup>
                   </FormGroup>
-                  <FormGroup
-                    className={classnames({
-                    })}
-                  >
+                  <FormGroup className={classnames({})}>
                     <InputGroup className="input-group-merge input-group-alternative mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
@@ -149,13 +150,12 @@ function Login() {
                         placeholder="Password"
                         required
                         type="password"
-                         ref={passwordRef}
+                        ref={passwordRef}
+                        onChange={handlePasswordChange}
+                        value={password}
                       />
                     </InputGroup>
-
-                    
-                    
-                  </FormGroup >
+                  </FormGroup>
 
                   <div className="text-muted font-italic">
                     <small>
@@ -178,19 +178,19 @@ function Login() {
                           htmlFor="customCheckRegister"
                         >
                           <span className="text-muted">
-                            I agree with the{" "}
-                            <a
-                              href="#pablo"
-                            >
-                              Privacy Policy
-                            </a>
+                            I agree with the <a href="#pablo">Privacy Policy</a>
                           </span>
                         </label>
                       </div>
                     </Col>
                   </Row>
                   <div className="text-center">
-                    <Button  disabled={loading} className="mt-4" color="info" type="submit" >
+                    <Button
+                      className="mt-4"
+                      onClick={handleLogin}
+                      color="info"
+                      type="submit"
+                    >
                       Login
                     </Button>
                   </div>
