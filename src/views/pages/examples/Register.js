@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import classnames from "classnames";
 import { Link as RouterLink, NavLink, useHistory, Redirect } from 'react-router';
+import { useAuth, } from "../examples/AuthContext";
 
 import {
   Button,
@@ -19,22 +20,36 @@ import {
   Alert,
 } from "reactstrap";
 import AuthHeader from "components/Headers/AuthHeader.js";
-import { signup, useAuth, logout, login } from "../../../firebase";
 import Login from "./Login";
-import {auth} from '../../../firebase';
-import {UserContext} from '../../../index'
+import { isConditionalExpression } from "typescript";
 
 
 function Register() {
-  const [focusedName, setfocusedName] = React.useState(false);
-  const [focusedEmail, setfocusedEmail] = React.useState(false);
-  const [focusedPassword, setfocusedPassword] = React.useState(false);
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const [ loading, setLoading ] = useState(false)
-  const currentUser = useAuth();
-
-
+    const emailRef = useRef()
+    const passwordRef = useRef()
+    const passwordConfirmRef = useRef()
+    const { signup } = useAuth()
+    const [error, setError] = useState("")
+    const [loading, setLoading] = useState(false)
+    const history = useHistory()
+    async function handleSubmit(e) {
+        e.preventDefault()
+    
+        if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+          return setError("Passwords do not match")
+        }
+    
+        try {
+          setError("")
+          setLoading(true)
+          await signup(emailRef.current.value, passwordRef.current.value)
+          history.push("/")
+        } catch {
+          setError("Failed to create an account")
+        }
+    
+        setLoading(false)
+      }
   
 
 //  async function handleSignup(){
@@ -48,27 +63,22 @@ function Register() {
 //    setLoading(false);
 //   }
  
-async function handleLogout(){
-  setLoading(true);
-  try{
-    await logout();
-  }catch{
-    alert("errror");
-  }
-  setLoading(false);
-}
+// async function handleLogout(){
+//   try{
+//     await logout();
+//   }catch{
+//     alert("errror");
+//   }
+// }
+// async function handleSignup() {
+//   // try {
+//     await signup(emailRef.currentUser, passwordRef.currentUser);
+//   // } catch {
+//     // alert("Error!");
+//   // }
+// }
 
-async function handleLogin() {
-  setLoading(true);
-  try {
-    await login(emailRef.current.value, passwordRef.current.value).then(()=> {
-      <Redirect to="/admin/dashboard" />
-    });
-  } catch {
-    alert("Error!");
-  }
-  setLoading(false);
-}
+
 
   return (
     <>
@@ -120,8 +130,8 @@ async function handleLogin() {
                   <small>Or sign up with credentials</small>
                   
                 </div>
-                <div>user{currentUser?.email}</div>
-                <Form role="form">
+                {error && <Alert variant="danger">{error}</Alert>}
+                <Form role="form" onSubmit={handleSubmit}>
                   
                   {/* <FormGroup
                     className={classnames({
@@ -155,16 +165,14 @@ async function handleLogin() {
                       </InputGroupAddon>
                       <Input
                         placeholder="Email"
-                        required
-                        type="email"
                         ref={emailRef}
-                     
+                        type="email"
+                        required
                       />
                     </InputGroup>
                   </FormGroup>
                   <FormGroup
                     className={classnames({
-                      focused: focusedPassword,
                     })}
                   >
                     <InputGroup className="input-group-merge input-group-alternative mb-3">
@@ -175,10 +183,9 @@ async function handleLogin() {
                       </InputGroupAddon>
                       <Input
                         placeholder="Password"
-                        required
                         ref={passwordRef}
                         type="password"
-                     
+                        required
                       />
                     </InputGroup>
 
@@ -218,15 +225,15 @@ async function handleLogin() {
                     </Col>
                   </Row>
                   <div className="text-center">
-                    {/* <Button  onClick={handleSignup} className="mt-4" color="info" type="button">
+                    <Button className="mt-4" color="info" type="submit">
                       Create account
-                    </Button> */}
-                    <Button  onClick={handleLogout} className="mt-4" color="info" type="button">
+                    </Button>
+                    {/* <Button  onClick={handleLogout} className="mt-4" color="info">
                       Logout
-                    </Button>
-                    <Button  onClick={handleLogin} className="mt-4" color="info" type="button">
+                    </Button> */}
+                    {/* <Button  onClick={handleLogin} className="mt-4" color="info">
                       Login
-                    </Button>
+                    </Button> */}
                   </div>
                 </Form>
               </CardBody>

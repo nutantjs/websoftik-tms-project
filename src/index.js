@@ -18,6 +18,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 // react library for routing
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { AuthProvider} from "../src/views/pages/examples/AuthContext";
+
 
 // plugins styles from node_modules
 import "react-notification-alert/dist/animate.css";
@@ -42,6 +44,7 @@ export const UserContext = React.createContext(null);
 
 ReactDOM.render(
   <BrowserRouter>
+  <AuthProvider>
     <Switch>
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
       <Route path="/rtl" render={(props) => <RTLLayout {...props} />} />
@@ -49,6 +52,7 @@ ReactDOM.render(
       <Route path="/" render={(props) => <IndexView {...props} />} />
       <Redirect from="*" to="/" />
     </Switch>
+    </AuthProvider>
   </BrowserRouter>,
   document.getElementById("root")
 );

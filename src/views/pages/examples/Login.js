@@ -17,34 +17,32 @@ import {
   Alert,
 } from "reactstrap";
 import AuthHeader from "components/Headers/AuthHeader.js";
-import { Redirect } from "react-router";
-import { signup, useAuth, logout, login } from "../../../firebase";
+import { Redirect, useHistory } from "react-router";
+import { login, useAuth, logout } from "../examples/AuthContext";
 
 
 function Login() {
-  const [focusedName, setfocusedName] = React.useState(false);
-  const [focusedEmail, setfocusedEmail] = React.useState(false);
-  const [focusedPassword, setfocusedPassword] = React.useState(false);
+  const emailRef = useRef()
+  const passwordRef = useRef()
+  const { login } = useAuth()
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const history = useHistory()
 
-  const [ loading, setLoading ] = useState(false);
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const currentUser = useAuth();
+  async function handleSubmit(e) {
+    e.preventDefault()
 
-
-
-  function handleLogin() {
-    setLoading(true);
     try {
-       login(emailRef, passwordRef).then(() => {
-        <Redirect to="https://www.npmjs.com/package/react-router-dom/v/5.2.0" />
-      });
+      setError("")
+      setLoading(true)
+      await login(emailRef.current.value, passwordRef.current.value);
+      history.push("/")
     } catch {
-      alert("Error!");
+      setError("Failed to log in")
     }
-    setLoading(false);
-  }
 
+    setLoading(false)
+  }
 
   return (
     <>
@@ -96,7 +94,9 @@ function Login() {
                   <small>Or login with credentials</small>
                   
                 </div>
-                <Form role="form">
+                {error && <Alert variant="danger">{error}</Alert>}
+
+                <Form role="form" onSubmit={handleSubmit}>
                   {/* <FormGroup
                     className={classnames({
                       focused: focusedName,
@@ -119,7 +119,6 @@ function Login() {
                   </FormGroup> */}
                   <FormGroup
                     className={classnames({
-                      focused: focusedEmail,
                     })}
                   >
                     <InputGroup className="input-group-merge input-group-alternative mb-3">
@@ -132,13 +131,12 @@ function Login() {
                         placeholder="Email"
                         required
                         type="email"
-                       ref={emailRef}
+                        ref={emailRef}
                       />
                     </InputGroup>
                   </FormGroup>
                   <FormGroup
                     className={classnames({
-                      focused: focusedPassword,
                     })}
                   >
                     <InputGroup className="input-group-merge input-group-alternative mb-3">
@@ -151,13 +149,14 @@ function Login() {
                         placeholder="Password"
                         required
                         type="password"
-                       ref={passwordRef}
+                         ref={passwordRef}
                       />
                     </InputGroup>
 
                     
                     
-                  </FormGroup>
+                  </FormGroup >
+
                   <div className="text-muted font-italic">
                     <small>
                       password strength:{" "}
@@ -191,7 +190,7 @@ function Login() {
                     </Col>
                   </Row>
                   <div className="text-center">
-                    <Button  onClick={handleLogin} className="mt-4" color="info" type="submit" >
+                    <Button  disabled={loading} className="mt-4" color="info" type="submit" >
                       Login
                     </Button>
                   </div>
